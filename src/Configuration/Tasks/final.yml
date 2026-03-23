@@ -30,10 +30,13 @@ actions:
 
   - !powerShell: {command: 'Get-ScheduledTask -TaskPath "\Microsoft\Office\*" | Disable-ScheduledTask'}
 
+  # Alternative way to group services without breaking services like XboxGipSvc
   - !run:
-    exeDir: true
-    exe: "PowerShell"
-    args: '-NoP -ExecutionPolicy Bypass -File SVCGROUP.ps1'
+    path: "%ProgramFiles%\\Revision Tool"
+    exe: "revitool.exe"
+    args: "tweaks performance service-grouping set recommended"
+    wait: true
+    runas: currentUserElevated
     weight: 50
 
   - !run: {exeDir: true, exe: "FINALIZE.cmd", weight: 200}
