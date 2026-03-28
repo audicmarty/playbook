@@ -37,11 +37,13 @@ actions:
   # === Windows Error Reporting Service - Disabled
   - !service: {name: 'WerSvc', operation: change, startup: 4}
 
-  # === Unified Telemetry Client - Disabled
-  - !service: {name: 'DiagTrack', operation: change, startup: 4}
+  # === Unified Telemetry Client - Disabled (unless Windows Insider is enabled)
+  - !service: {name: 'DiagTrack', operation: change, startup: 4, option: 'disable-insider'}
+  - !service: {name: 'DiagTrack', operation: change, startup: 2, option: 'enable-insider'}
 
-  # === Windows Insider Service - Disabled
-  - !service: {name: 'wisvc', operation: change, startup: 4}
+  # === Windows Insider Service - Disabled (unless Windows Insider is enabled)
+  - !service: {name: 'wisvc', operation: change, startup: 4, option: 'disable-insider'}
+  - !service: {name: 'wisvc', operation: change, startup: 3, option: 'enable-insider'}
 
   # === Program Compatibility Assistant Service - Disabled
   - !service: {name: 'PcaSvc', operation: change, startup: 4}

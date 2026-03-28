@@ -43,9 +43,10 @@ actions:
 
   # ======> Windows Insider Program
 
-  # === Windows Insider Program - Disabled
+  # === Windows Insider Program - Disabled (unless Windows Insider is enabled)
   # ------> For Version 1703 and below.
-  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds', value: 'AllowBuildPreview', type: REG_DWORD, data: '0'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds', value: 'AllowBuildPreview', type: REG_DWORD, data: '0', option: 'disable-insider'}
+  - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\PreviewBuilds', value: 'AllowBuildPreview', type: REG_DWORD, data: '1', option: 'enable-insider'}
   
     
 
