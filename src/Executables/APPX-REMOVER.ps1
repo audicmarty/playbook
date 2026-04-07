@@ -2,6 +2,8 @@ param (
     [Parameter(Mandatory = $true)]
     [string[]]$Packages,
     [Parameter(Mandatory = $false)]
+    [string[]]$ExcludePackages = @(),
+    [Parameter(Mandatory = $false)]
     [switch]$Unregister = $false
 )
 
@@ -11,6 +13,12 @@ $allPackages = Get-AppxPackage -AllUsers | Select-Object PackageFullName, Packag
 
 foreach ($package in $Packages) {
     $filteredPackages = $allPackages | Where-Object { $_.PackageFullName -like "*$package*" }
+    if ($ExcludePackages.Count -gt 0) {
+        $filteredPackages = $filteredPackages | Where-Object {
+            $fullPackageName = $_.PackageFullName
+            -not ($ExcludePackages | Where-Object { $fullPackageName -like "*$_*" })
+        }
+    }
 
     foreach ($pkg in $filteredPackages) {
 
