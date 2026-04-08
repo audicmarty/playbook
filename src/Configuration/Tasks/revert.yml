@@ -32,7 +32,7 @@ actions:
   # Breaks Efficiency Mode in Task Manager
   - !service: {name: 'bam', operation: change, startup: 1}
 
-  #  The Start Recording button on GameBar is gray outed - #74
+  # The Start Recording button on GameBar is gray outed - #74
   - !registryValue: {path: 'HKLM\Software\Microsoft\Windows\CurrentVersion\GameDVR', value: 'AppCaptureEnabled', operation: delete}
   - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\GameDVR', value: 'AppCaptureEnabled', operation: delete, option: '!remove-appx-xbox'}
 
@@ -73,10 +73,12 @@ actions:
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\Servicing', value: 'RepairContentServerSource', operation: delete}
   
   # Disabling core Superfetch components break 'defrag c: -b'
-  - !powerShell:
-    command: |
-      $path = ${env:ProgramFiles} + '\Revision Tool\data\flutter_assets\additionals\EnableSF.bat'
-      Start-Process -FilePath $path -Wait -NoNewWindow
+  - !run:
+    path: "%ProgramFiles%\\Revision Tool"
+    exe: "revitool.exe"
+    args: "tweaks performance superfetch enable"
+    wait: true
+    runas: currentUserElevated
 
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Dfrg\BootOptimizeFunction', value: 'Enable', operation: delete}
   - !registryValue: {path: 'HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\OptimalLayout', value: 'EnableAutoLayout', operation: delete}
@@ -108,10 +110,12 @@ actions:
 
   # Fix KGL mismatch in Xbox Game Bar
   # Disabling background apps breaks Xbox Game Bar KGL update. We remove bloat anyway and it can be toggled in Revision Tool
-  - !registryValue: {path: 'HKLM\Software\Policies\Microsoft\Windows\AppPrivacy', value: 'LetAppsRunInBackground', operation: delete}
-  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\Search', value: 'BackgroundAppGlobalToggle', operation: delete}
-  - !registryValue: {path: 'HKLM\Software\Microsoft\Windows\CurrentVersion\Search', value: 'BackgroundAppGlobalToggle', operation: delete}
-  - !registryValue: {path: 'HKCU\Software\Microsoft\Windows\CurrentVersion\BackgroundAccessApplications', value: 'GlobalUserDisabled', operation: delete}
+  - !run:
+    path: "%ProgramFiles%\\Revision Tool"
+    exe: "revitool.exe"
+    args: "tweaks performance background-apps enable"
+    wait: true
+    runas: currentUserElevated
   - !appx: {operation: clearCache, name: '*XboxGamingOverlay*'}
 
   # Internet Explorer
@@ -121,10 +125,13 @@ actions:
   - !registryKey: {path: 'HKCU\Software\Policies\Microsoft\Internet Explorer', operation: delete}
   - !registryKey: {path: 'HKLM\Software\Policies\Microsoft\Internet Explorer', operation: delete}
 
-  #  Lowering the value causes issues, such as hints overlapping each other, which can sometimes prevent you from reading or closing them, therefore reverting to default 400ms
+  # Lowering the value causes issues, such as hints overlapping each other, which can sometimes prevent you from reading or closing them, therefore reverting to default 400ms
   - !registryValue: {path: 'HKCU\Control Panel\Mouse', value: 'MouseHoverTime', type: REG_SZ, data: '400'}
   - !registryValue: {path: 'HKU\.DEFAULT\Control Panel\Mouse', value: 'MouseHoverTime', operation: delete}
   
   # SafeSearch revert
   # Web search is not allowed, removing this in case web search gets enabled
   - !registryValue: {path: 'HKLM\SOFTWARE\Policies\Microsoft\Windows\Windows Search', value: 'ConnectedSearchSafeSearch', operation: delete}
+
+  # DPS is needed for the Data Usage page in Settings and Network monitoring in Task Manager.
+  - !service: {name: 'DPS', operation: change, startup: 2}
