@@ -91,7 +91,7 @@ actions:
         'Microsoft.XboxApp', # Xbox Console Companion is deprecated
         'Microsoft.GamingApp',
         'Microsoft.Edge.GameAssist'
-      )
+      ) -ExcludePackages 'Microsoft.XboxGameCallableUI'
 
     #139
   - !registryValue: {path: 'HKCR\ms-gamebar', value: '', type: REG_SZ, data: 'URL:ms-gamebar', option: "remove-appx-xbox"}
